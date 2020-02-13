@@ -291,19 +291,25 @@ public class PromoteStudents {
 
             int listsize = ListStudent.size();
             System.out.println(listsize);
-            ArrayList listNames1 = new ArrayList();
+            ArrayList<String> listNames1 = new ArrayList<>();
             for (int i = 2; i <= listsize; i++) {
                 String s = driver1.findElement(By.xpath("/html/body/div[1]/div[1]/section[2]/div/div/div[2]/div[2]/form/div[2]/table/tbody/tr[" + i + "]/td[1]")).getText();
                 System.out.println("Value in list is: " + s);
-                listNames1.add(driver1.findElement(By.xpath("/html/body/div[1]/div[1]/section[2]/div/div/div[2]/div[2]/form/div[2]/table/tbody/tr[\" + i + \"]/td[1]")).getText());
+                listNames1.add(driver1.findElement(By.xpath("/html/body/div[1]/div[1]/section[2]/div/div/div[2]/div[2]/form/div[2]/table/tbody/tr[" + i + "]/td[1]")).getText());
             }
+            ArrayList<Integer> newIntegerList1= new ArrayList<Integer>(listNames1.size());
+            for(String myInt : listNames1 ){
+                newIntegerList1.add(Integer.valueOf(myInt));
+            }
+            Collections.sort(newIntegerList1);
+            System.out.println(newIntegerList1);
             DatabaseFunctions DAB = new DatabaseFunctions(extentTest);
             conn = DAB.connect();
             statement = conn.createStatement();
             String students = "SELECT student_session.id, student_session.session_id, students.firstname, students.lastname, students.is_active, students.is_inactive, classes.class, students.admission_no FROM `student_session` INNER JOIN students ON student_session.student_id = students.id INNER JOIN classes ON student_session.class_id=classes.id \n" +
                     "WHERE student_session.session_id='15' AND classes.class='9th' AND student_session.is_inactive='no' AND students.id  NOT IN (SELECT student_id FROM promot_student)";
             queryRs = statement.executeQuery(students);
-            ArrayList listNames = new ArrayList();
+            ArrayList<String > listNames = new ArrayList<String>();
 
             while (queryRs.next()) {
                 String s1 = null;
@@ -312,9 +318,15 @@ public class PromoteStudents {
                 listNames.add(queryRs.getString("students.admission_no"));
 
             }
-            System.out.println(listNames.equals(listNames1));
+            ArrayList<Integer> newIntegerList= new ArrayList<Integer>(listNames.size());
+            for(String myInt : listNames ){
+                newIntegerList.add(Integer.valueOf(myInt));
+            }
+            Collections.sort(newIntegerList);
+            System.out.println(newIntegerList);
+            System.out.println(newIntegerList.equals(newIntegerList1));
 
-            actionClass4.CompareList(listNames, listNames1);
+            actionClass4.CompareList(newIntegerList, newIntegerList1);
 
             actionClass4.captureScreen("Default Keyword search");
             return listNames1.toArray();
