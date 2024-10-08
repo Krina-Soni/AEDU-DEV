@@ -88,21 +88,11 @@
     </build>
 
 </project>
-Cypress.Commands.add('selectRandomRadioButton', (selector) => {
-  cy.get(selector).should('be.visible').within(() => {
-    cy.get('input[type="radio"]').should('have.length.greaterThan', 0).then(($radios) => {
+function selectRandomRadioButton(selector: string): Promise<string> {
+  return cy.get(selector).should('be.visible').within(() => {
+    return cy.get('input[type="radio"]').should('have.length.greaterThan', 0).then(($radios) => {
       const randomIndex = Math.floor(Math.random() * $radios.length);
-      $radios.eq(randomIndex).check().invoke('val').then((value) => {
-        cy.wrap(value).as('randomRadioValue');
-      });
+      return $radios.eq(randomIndex).check().invoke('val');
     });
   });
-});
-it('selects a random radio button and retrieves its value', () => {
-  cy.visit('your_page_url');
-  cy.selectRandomRadioButton('.radio-button-container');
-  cy.get('@randomRadioValue').then((value) => {
-    // Use the value in your test assertions or actions
-    expect(value).to.equal('expected_value');
-  });
-});
+}
