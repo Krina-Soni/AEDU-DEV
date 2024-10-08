@@ -88,11 +88,13 @@
     </build>
 
 </project>
-function selectRandomRadioButton(selector: string): Promise<string> {
+function selectRandomDropdownOption(selector: string): Promise<string> {
   return cy.get(selector).should('be.visible').within(() => {
-    return cy.get('input[type="radio"]').should('have.length.greaterThan', 0).then(($radios) => {
-      const randomIndex = Math.floor(Math.random() * $radios.length);
-      return $radios.eq(randomIndex).check().invoke('val');
+    return cy.get('select').should('have.length.greaterThan', 0).then(($select) => {
+      const randomIndex = Math.floor(Math.random() * $select.children().length);
+      return $select.children().eq(randomIndex).click().then(() => {
+        return $select.val();
+      });
     });
   });
 }
