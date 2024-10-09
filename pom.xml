@@ -93,8 +93,37 @@ function selectRandomDropdownOption(selector: string): Promise<string> {
     return cy.get('select').should('have.length.greaterThan', 0).then(($select) => {
       const randomIndex = Math.floor(Math.random() * $select.children().length);
       return $select.children().eq(randomIndex).click().then(() => {
+        return $select.I'd be glad to help you create a reusable function for selecting a random option from a dropdown in Cypress:
+function selectRandomDropdownOption(selector: string): Promise<string> {
+  return cy.get(selector).should('be.visible').within(() => {
+    return cy.get('select').should('have.length.greaterThan', 0).then(($select) => {
+      const randomIndex = Math.floor(Math.random() * $select.children().length);
+      return $select.children().eq(randomIndex).click().then(() => {
         return $select.val();
       });
     });
   });
 }
+
+Explanation:
+ * Function Declaration: The selectRandomDropdownOption function takes a selector string as input and returns a Promise that resolves to the value of the selected option.
+ * Selector Validation: The cy.get(selector).should('be.visible') ensures the selector is valid and the dropdown element is visible.
+ * Dropdown Existence: The cy.get('select').should('have.length.greaterThan', 0) checks if there's at least one dropdown element.
+ * Random Option Selection: The Math.floor(Math.random() * $select.children().length) generates a random index within the dropdown options.
+ * Option Click: The $select.children().eq(randomIndex).click() selects the option at the random index.
+ * Value Retrieval: The $select.val() method gets the value of the selected option.
+ * Promise Return: The function returns the Promise from the click() and val() methods, allowing you to use async/await or .then() to handle the result.
+Usage Example:
+it('selects a random dropdown option and retrieves its value', () => {
+  cy.visit('your_page_url');
+  selectRandomDropdownOption('.dropdown-selector').then((value) => {
+    // Use the value in your test assertions or actions
+    expect(value).to.equal('expected_value');
+  });
+});
+
+Key Points:
+ * The function is reusable and can be called from anywhere in your tests.
+ * It returns a Promise, allowing you to use async/await or .then() to handle the result asynchronously.
+ * The function provides a clear and concise way to select a random dropdown option and get its value.
+This function effectively selects a random option from a dropdown and returns its value, making it a valuable tool for your Cypress tests.
